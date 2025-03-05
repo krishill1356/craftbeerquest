@@ -5,6 +5,7 @@ export interface Beer {
   tagline: string;
   description: string;
   image_url: string;
+  specific_image_url?: string; // Added field for specific beer images
   abv: number;
   ibu: number;
   brewery: string;
@@ -22,6 +23,7 @@ const beerDatabase: Beer[] = [
     tagline: "Juicy and Tropical",
     description: "A hazy, juicy IPA with notes of tropical fruit, citrus, and a soft mouthfeel.",
     image_url: "https://images.unsplash.com/photo-1566633806327-68e152aaf26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1612510532384-9eea6e164d8a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 6.8,
     ibu: 55,
     brewery: "Cloudwater Brew Co",
@@ -36,6 +38,7 @@ const beerDatabase: Beer[] = [
     tagline: "Rich and Complex",
     description: "Imperial stout aged in bourbon barrels for a deep, complex flavor profile with notes of chocolate, vanilla, and oak.",
     image_url: "https://images.unsplash.com/photo-1518176258769-f227c798150e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1517256673644-36ad11246d21?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 14.3,
     ibu: 60,
     brewery: "Goose Island",
@@ -50,6 +53,7 @@ const beerDatabase: Beer[] = [
     tagline: "Legendary Double IPA",
     description: "Well-balanced with big hop aromas, bitter but not harsh. A true classic in the craft beer world.",
     image_url: "https://images.unsplash.com/photo-1523567830207-96731740fa71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1613766413624-3d1d85cc5b68?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 8.0,
     ibu: 100,
     brewery: "Russian River Brewing Company",
@@ -64,6 +68,7 @@ const beerDatabase: Beer[] = [
     tagline: "Classic Belgian Farmhouse",
     description: "The benchmark of the style. Slightly fruity with a mild tartness, dry finish, and distinctive yeast character.",
     image_url: "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1612528538906-c421c8a3ae75?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 6.5,
     ibu: 30,
     brewery: "Brasserie Dupont",
@@ -78,6 +83,7 @@ const beerDatabase: Beer[] = [
     tagline: "World-Class Wheat Beer",
     description: "A traditional Bavarian wheat beer with characteristic banana and clove notes from the yeast.",
     image_url: "https://images.unsplash.com/photo-1567696911980-2eed69a46042?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1600788887277-5ada0594d32a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 5.4,
     ibu: 14,
     brewery: "Weihenstephaner",
@@ -92,6 +98,7 @@ const beerDatabase: Beer[] = [
     tagline: "Flemish Red Ale",
     description: "A traditional Flemish red ale, matured in oak barrels for 18 months. Slightly sweet with a sour finish.",
     image_url: "https://images.unsplash.com/photo-1612528443702-f6741f70a049?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1638845576329-2b33d5496144?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 6.2,
     ibu: 15,
     brewery: "Brouwerij Verhaeghe",
@@ -106,6 +113,7 @@ const beerDatabase: Beer[] = [
     tagline: "The Original Pilsner",
     description: "The world's first golden lager, with a complex yet balanced flavor profile and a refreshing hop bitterness.",
     image_url: "https://images.unsplash.com/photo-1600788886076-fa088b3cf54f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1630446070374-df1ec648ac65?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80", 
     abv: 4.4,
     ibu: 40,
     brewery: "Pilsner Urquell",
@@ -120,6 +128,7 @@ const beerDatabase: Beer[] = [
     tagline: "Legendary Trappist Ale",
     description: "Unique among Trappist beers for its use of dry hopping and Brettanomyces yeast. Complex and evolves over time.",
     image_url: "https://images.unsplash.com/photo-1613520761181-a157937e9407?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1613502647924-763be3477bdb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 6.2,
     ibu: 32,
     brewery: "Brasserie d'Orval",
@@ -134,6 +143,7 @@ const beerDatabase: Beer[] = [
     tagline: "Balanced American IPA",
     description: "An American IPA with a significant malt body balancing the hop bitterness and featuring a floral hop aroma.",
     image_url: "https://images.unsplash.com/photo-1588615419966-0c0f3b0c4d41?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1551798662-4bd75e89fca3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 7.0,
     ibu: 55,
     brewery: "Bell's Brewery",
@@ -148,6 +158,7 @@ const beerDatabase: Beer[] = [
     tagline: "Iconic Irish Stout",
     description: "Smooth and creamy with a distinctive roasted bitterness. The most famous stout in the world.",
     image_url: "https://images.unsplash.com/photo-1577504677382-2179e8300d4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 4.2,
     ibu: 45,
     brewery: "Guinness",
@@ -162,6 +173,7 @@ const beerDatabase: Beer[] = [
     tagline: "The American Craft Classic",
     description: "A pioneer in the American craft beer movement. Balanced and complex with a refreshing hop character.",
     image_url: "https://images.unsplash.com/photo-1600788830439-c433325bb5b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1581873372796-635b67ca2008?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 5.6,
     ibu: 38,
     brewery: "Sierra Nevada Brewing Co.",
@@ -176,6 +188,7 @@ const beerDatabase: Beer[] = [
     tagline: "Strong Dark Trappist Ale",
     description: "Rich and complex with flavors of dark fruit, spice, and caramel. Improves with age.",
     image_url: "https://images.unsplash.com/photo-1600788886067-5e16705744fe?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    specific_image_url: "https://images.unsplash.com/photo-1567103472667-6898f3a79cf2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     abv: 9.0,
     ibu: 30,
     brewery: "Chimay",

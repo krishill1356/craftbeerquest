@@ -51,10 +51,10 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
           </div>
         ) : (
           <img
-            src={beer.image_url}
+            src={beer.specific_image_url || beer.image_url}
             alt={beer.name}
             className={cn(
-              "absolute inset-0 w-full h-full object-cover transition-opacity duration-500",
+              "absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-500",
               imageLoaded ? "opacity-100" : "opacity-0"
             )}
             onLoad={handleImageLoad}
