@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { Beer as BeerIcon, Link, Star } from 'lucide-react';
+import { Beer as BeerIcon, Link, Star, Share2 } from 'lucide-react';
 import { Beer, isBeerFavorite, saveFavoriteBeer, removeFavoriteBeer } from '@/services/beerService';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface BeerCardProps {
   beer: Beer;
@@ -13,6 +14,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isImageError, setIsImageError] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsFavorite(isBeerFavorite(beer.id));
@@ -34,6 +36,40 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
     }
     setIsFavorite(!isFavorite);
     if (onFavoriteToggle) onFavoriteToggle();
+  };
+
+  const shareBeer = async () => {
+    const shareData = {
+      title: `Check out this beer: ${beer.name}`,
+      text: `I think you'd enjoy ${beer.name} by ${beer.brewery}. ${beer.tagline}`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast({
+          title: "Shared successfully",
+          description: `You recommended ${beer.name} to a friend`,
+        });
+      } else {
+        // Fallback for browsers that don't support the Web Share API
+        navigator.clipboard.writeText(
+          `Check out this beer: ${beer.name} by ${beer.brewery}. ${beer.tagline}\n\n${window.location.href}`
+        );
+        toast({
+          title: "Link copied to clipboard",
+          description: "Now you can paste it to share with a friend",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Sharing failed",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -62,7 +98,15 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
           />
         )}
         
-        <div className="absolute top-3 right-3 z-10">
+        <div className="absolute top-3 right-3 z-10 flex space-x-2">
+          <button
+            onClick={shareBeer}
+            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/80 text-beer-amber hover:bg-white transition-all"
+            aria-label="Share beer"
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
+          
           <button
             onClick={toggleFavorite}
             className={cn(
@@ -71,6 +115,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
                 ? "bg-beer-amber text-white" 
                 : "bg-white/80 text-beer-amber hover:bg-white"
             )}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             <Star className={cn("w-5 h-5", isFavorite && "fill-current")} />
           </button>
