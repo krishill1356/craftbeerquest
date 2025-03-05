@@ -58,6 +58,14 @@ const BeerSearch = ({ onSearch }: BeerSearchProps) => {
     setShowSuggestions(false);
   };
 
+  const handleFocus = () => {
+    if (query.length >= 2) {
+      const results = getSearchSuggestions(query);
+      setSuggestions(results);
+      setShowSuggestions(results.length > 0);
+    }
+  };
+
   return (
     <div className="relative w-full max-w-2xl mx-auto" id="search">
       <form onSubmit={handleSubmit} className="relative">
@@ -66,7 +74,7 @@ const BeerSearch = ({ onSearch }: BeerSearchProps) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => query.length >= 2 && setSuggestions(getSearchSuggestions(query)) && setShowSuggestions(true)}
+          onFocus={handleFocus}
           placeholder="Search beers, styles, or flavors..."
           className="w-full bg-white/80 backdrop-blur-sm border border-beer-amber/20 rounded-full px-6 py-4 pl-12 pr-32 focus:outline-none focus:ring-2 focus:ring-beer-amber/50 focus:border-beer-amber/50 transition-all text-beer-dark placeholder:text-beer-brown/50"
         />
