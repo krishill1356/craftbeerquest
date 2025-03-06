@@ -8,10 +8,9 @@ interface HeroSectionProps {
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16 social-bg">
-      <div className="absolute inset-0 korean-pattern"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-beer-foam/10 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none"></div>
       
-      <div className="relative z-10 text-center max-w-3xl mx-auto social-reveal">
+      <div className="relative z-10 text-center max-w-3xl mx-auto fade-slide-up">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
           Discover Your 
           <span className="text-beer-amber"> Next Favorite </span>
@@ -64,3 +63,4 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
 };
 
 export default HeroSection;
+

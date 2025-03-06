@@ -63,9 +63,9 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(to bottom, 
-              rgba(211, 160, 77, 0.2) 0%, 
-              rgba(211, 160, 77, 0) 50%, 
-              rgba(211, 160, 77, 0.2) 100%);
+              rgba(0, 0, 0, 0.2) 0%, 
+              rgba(0, 0, 0, 0) 50%, 
+              rgba(0, 0, 0, 0.2) 100%);
   z-index: 1;
 }
 
@@ -73,8 +73,8 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.cheers-overlay::before {
-  content: '건배!'; /* "Cheers" in Korean */
+.social-overlay::before {
+  content: 'Cheers!';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -84,3 +84,4 @@
   font-weight: bold;
   z-index: 0;
 }
+
