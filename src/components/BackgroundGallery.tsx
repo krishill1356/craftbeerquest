@@ -43,7 +43,7 @@ interface BackgroundGalleryProps {
   overlay?: boolean;
   overlayClass?: string;
   children?: React.ReactNode;
-  id?: string; // Add the id prop
+  id?: string;
 }
 
 const BackgroundGallery = ({
@@ -53,9 +53,39 @@ const BackgroundGallery = ({
   overlay = true,
   overlayClass = "bg-gradient-to-b from-black/60 via-black/30 to-black/60",
   children,
-  id // Include id in destructuring
+  id
 }: BackgroundGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+
+  // Preload images and track loading status
+  useEffect(() => {
+    const imagePromises = images.map((image, index) => {
+      return new Promise<number>((resolve) => {
+        const img = new Image();
+        img.src = image.url;
+        img.onload = () => resolve(index);
+        img.onerror = () => {
+          console.error(`Failed to load image: ${image.url}`);
+          resolve(index);
+        };
+      });
+    });
+
+    // Mark each image as loaded when it completes
+    imagePromises.forEach(promise => {
+      promise.then(index => {
+        setImagesLoaded(prev => {
+          const newState = [...prev];
+          newState[index] = true;
+          return newState;
+        });
+      });
+    });
+
+    // Initialize the loading status array
+    setImagesLoaded(new Array(images.length).fill(false));
+  }, [images]);
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -83,7 +113,14 @@ const BackgroundGallery = ({
             zIndex: 0
           }}
           aria-hidden={index !== currentIndex}
-        />
+        >
+          {/* Fallback when image fails to load */}
+          {!imagesLoaded[index] && (
+            <div className="absolute inset-0 bg-beer-dark/80 flex items-center justify-center">
+              <div className="animate-pulse bg-beer-amber/20 w-full h-full"></div>
+            </div>
+          )}
+        </div>
       ))}
       
       {overlay && <div className={`absolute inset-0 ${overlayClass} z-[1]`}></div>}

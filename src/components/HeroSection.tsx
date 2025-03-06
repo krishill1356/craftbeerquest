@@ -27,7 +27,12 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
   ];
 
   return (
-    <BackgroundGallery className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16" images={heroImages}>
+    <BackgroundGallery 
+      className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16" 
+      images={heroImages}
+      overlay={true}
+      overlayClass="bg-gradient-to-b from-black/70 via-black/50 to-black/70"
+    >
       <div className="text-center max-w-3xl mx-auto fade-slide-up">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
           Discover Your 
