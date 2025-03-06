@@ -42,12 +42,7 @@
   color: #888;
 }
 
-/* Korean-inspired additional styling */
-.korean-border {
-  border: 2px solid;
-  border-image: linear-gradient(45deg, #D3A04D, #F5EFE0, #D3A04D) 1;
-}
-
+/* Enhanced social image styling */
 .social-image-container {
   position: relative;
   overflow: hidden;
@@ -85,3 +80,12 @@
   z-index: 0;
 }
 
+/* Image transition animations */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-in-image {
+  animation: fadeIn 1s ease-in-out;
+}

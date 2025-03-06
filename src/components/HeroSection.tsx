@@ -1,5 +1,6 @@
 
 import BeerSearch from './BeerSearch';
+import BackgroundGallery from './BackgroundGallery';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -7,10 +8,8 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16 social-bg">
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none"></div>
-      
-      <div className="relative z-10 text-center max-w-3xl mx-auto fade-slide-up">
+    <BackgroundGallery className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16">
+      <div className="text-center max-w-3xl mx-auto fade-slide-up">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
           Discover Your 
           <span className="text-beer-amber"> Next Favorite </span>
@@ -27,11 +26,11 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
         
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <span className="text-sm text-white/80">Try searching for:</span>
-          {['IPA', 'Stout', 'Sour', 'Hoppy', 'Sierra Nevada', 'Fruity'].map((term, index) => (
+          {['IPA', 'Stout', 'Sour', 'Hoppy', 'Sierra Nevada', 'Fruity'].map((term) => (
             <button
               key={term}
               onClick={() => onSearch(term)}
-              className={`px-3 py-1 bg-white/20 hover:bg-beer-amber/60 rounded-full text-sm text-white transition-colors staggered-item fade-slide-up`}
+              className="px-3 py-1 bg-white/20 hover:bg-beer-amber/60 rounded-full text-sm text-white transition-colors staggered-item fade-slide-up"
             >
               {term}
             </button>
@@ -58,9 +57,8 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
           </svg>
         </div>
       </div>
-    </div>
+    </BackgroundGallery>
   );
 };
 
 export default HeroSection;
-

@@ -6,6 +6,7 @@ import BeerResults from '@/components/BeerResults';
 import FavoriteBeers from '@/components/FavoriteBeers';
 import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
+import SocialBackgroundSection from '@/components/SocialBackgroundSection';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,7 +34,11 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection onSearch={handleSearch} />
         <BeerResults searchQuery={searchQuery} isSearching={isSearching} />
-        <FavoriteBeers />
+        
+        <SocialBackgroundSection>
+          <FavoriteBeers />
+        </SocialBackgroundSection>
+        
         <AboutSection />
       </main>
       
