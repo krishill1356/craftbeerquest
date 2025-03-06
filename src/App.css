@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +40,47 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Korean-inspired additional styling */
+.korean-border {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #D3A04D, #F5EFE0, #D3A04D) 1;
+}
+
+.social-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.social-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, 
+              rgba(211, 160, 77, 0.2) 0%, 
+              rgba(211, 160, 77, 0) 50%, 
+              rgba(211, 160, 77, 0.2) 100%);
+  z-index: 1;
+}
+
+.professional-shadow {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.cheers-overlay::before {
+  content: '건배!'; /* "Cheers" in Korean */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: bold;
+  z-index: 0;
 }
