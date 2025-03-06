@@ -1,14 +1,33 @@
 
 import BeerSearch from './BeerSearch';
-import BackgroundGallery from './BackgroundGallery';
+import BackgroundGallery, { BackgroundImage } from './BackgroundGallery';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
 }
 
 const HeroSection = ({ onSearch }: HeroSectionProps) => {
+  // Use high-quality unsplash images for the hero
+  const heroImages: BackgroundImage[] = [
+    {
+      url: "https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      alt: "Group of friends enjoying craft beer at a bar",
+      position: "center"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1575444758702-4a6b9222336e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      alt: "Happy people toasting with beer glasses at outdoor gathering",
+      position: "top center"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      alt: "Large group enjoying pub atmosphere with craft beers",
+      position: "center"
+    }
+  ];
+
   return (
-    <BackgroundGallery className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16">
+    <BackgroundGallery className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-16" images={heroImages}>
       <div className="text-center max-w-3xl mx-auto fade-slide-up">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
           Discover Your 

@@ -10,27 +10,27 @@ export type BackgroundImage = {
 // Collection of social drinking images
 export const socialDrinkingImages: BackgroundImage[] = [
   {
-    url: "/social-drinking-1.jpg",
+    url: "https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     alt: "Group of friends enjoying craft beer at a bar",
     position: "center"
   },
   {
-    url: "/social-drinking-2.jpg",
+    url: "https://images.unsplash.com/photo-1575444758702-4a6b9222336e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     alt: "Happy people toasting with beer glasses at outdoor gathering",
     position: "top center"
   },
   {
-    url: "/social-drinking-hipster.jpg",
+    url: "https://images.unsplash.com/photo-1559818454-1b46997bfe30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     alt: "Hipster friends sampling craft beers at brewery",
     position: "center"
   },
   {
-    url: "/social-drinking-mature.jpg",
+    url: "https://images.unsplash.com/photo-1570034521972-575d4af5bcf1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     alt: "Mature friends enjoying quality beer together",
     position: "center"
   },
   {
-    url: "/craft-beer-tasting.jpg",
+    url: "https://images.unsplash.com/photo-1559526323-cb2f2fe2591b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     alt: "Craft beer tasting event with diverse group",
     position: "center"
   }
@@ -43,6 +43,7 @@ interface BackgroundGalleryProps {
   overlay?: boolean;
   overlayClass?: string;
   children?: React.ReactNode;
+  id?: string; // Add the id prop
 }
 
 const BackgroundGallery = ({
@@ -51,7 +52,8 @@ const BackgroundGallery = ({
   interval = 7000,
   overlay = true,
   overlayClass = "bg-gradient-to-b from-black/60 via-black/30 to-black/60",
-  children
+  children,
+  id // Include id in destructuring
 }: BackgroundGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -68,7 +70,7 @@ const BackgroundGallery = ({
   }, [images.length, interval]);
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={`relative overflow-hidden ${className}`} id={id}>
       {images.map((image, index) => (
         <div
           key={index}
