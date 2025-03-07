@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { Beer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
@@ -29,12 +28,11 @@ const Header = () => {
     >
       <div className="mx-auto max-w-7xl flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Beer className="h-8 w-8 text-beer-amber" />
-          <h1 className="text-xl md:text-2xl font-bold tracking-tight">
-            <span className="text-beer-dark">My</span>
-            <span className="text-beer-amber">Next</span>
-            <span className="text-beer-dark">Beer</span>
-          </h1>
+          <img 
+            src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
+            alt="My Next Beer Logo" 
+            className="h-10 w-auto"
+          />
         </div>
         
         <nav className="hidden md:flex items-center space-x-6">
@@ -44,7 +42,11 @@ const Header = () => {
         </nav>
         
         <div className="md:hidden">
-          <Beer className="h-6 w-6 text-beer-amber" />
+          <img 
+            src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
+            alt="My Next Beer Logo" 
+            className="h-6 w-auto"
+          />
         </div>
       </div>
     </header>

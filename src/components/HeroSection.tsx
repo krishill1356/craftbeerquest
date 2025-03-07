@@ -10,6 +10,11 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
   // Use high-quality unsplash images for the hero
   const heroImages: BackgroundImage[] = [
     {
+      url: "/lovable-uploads/9aec2981-c6fb-493a-a01e-0d5a77980961.png",
+      alt: "Group of people enjoying craft beer at a bar",
+      position: "center"
+    },
+    {
       url: "https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
       alt: "Group of friends enjoying craft beer at a bar",
       position: "center"
@@ -18,11 +23,6 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
       url: "https://images.unsplash.com/photo-1575444758702-4a6b9222336e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
       alt: "Happy people toasting with beer glasses at outdoor gathering",
       position: "top center"
-    },
-    {
-      url: "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-      alt: "Large group enjoying pub atmosphere with craft beers",
-      position: "center"
     }
   ];
 
@@ -34,6 +34,12 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
       overlayClass="bg-gradient-to-b from-black/70 via-black/50 to-black/70"
     >
       <div className="text-center max-w-3xl mx-auto fade-slide-up">
+        <img 
+          src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
+          alt="My Next Beer Logo" 
+          className="h-32 md:h-40 w-auto mx-auto mb-6"
+        />
+        
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
           Discover Your 
           <span className="text-beer-amber"> Next Favorite </span>
