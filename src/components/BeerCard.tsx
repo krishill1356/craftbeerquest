@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Share2 } from 'lucide-react';
 import { Beer, saveFavoriteBeer, removeFavoriteBeer, isBeerFavorite } from '@/services/beerService';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,43 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
     }
   };
   
+  const handleShare = async () => {
+    const shareText = `Check out this awesome beer: ${beer.name} by ${beer.brewery} - ${beer.description?.substring(0, 100)}...`;
+    const shareUrl = window.location.href;
+    
+    // Use Web Share API if available
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: beer.name,
+          text: shareText,
+          url: shareUrl,
+        });
+        toast.success('Shared successfully');
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          toast.error('Error sharing');
+          fallbackShare();
+        }
+      }
+    } else {
+      fallbackShare();
+    }
+  };
+  
+  const fallbackShare = () => {
+    const shareText = `Check out this awesome beer: ${beer.name} by ${beer.brewery} - ${beer.description?.substring(0, 100)}...`;
+    const shareUrl = window.location.href;
+    
+    // Fallback to clipboard
+    try {
+      navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      toast.success('Copied to clipboard! Now you can share it anywhere.');
+    } catch (error) {
+      toast.error('Unable to copy to clipboard.');
+    }
+  };
+  
   const fallbackImage = "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
   
   return (
@@ -42,13 +80,22 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
           onError={() => setImgError(true)}
           className="absolute inset-0 w-full h-full object-cover transition-transform hover:scale-105"
         />
-        <button
-          onClick={handleFavoriteToggle}
-          className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
-          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <Heart className={cn("h-5 w-5", isFavorite ? "fill-red-500 text-red-500" : "text-gray-400")} />
-        </button>
+        <div className="absolute top-2 right-2 flex gap-2">
+          <button
+            onClick={handleShare}
+            className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
+            aria-label="Share this beer"
+          >
+            <Share2 className="h-5 w-5 text-gray-600" />
+          </button>
+          <button
+            onClick={handleFavoriteToggle}
+            className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart className={cn("h-5 w-5", isFavorite ? "fill-red-500 text-red-500" : "text-gray-400")} />
+          </button>
+        </div>
       </div>
       
       <CardHeader className="pb-2">
