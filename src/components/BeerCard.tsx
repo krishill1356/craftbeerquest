@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { Beer, saveFavoriteBeer, removeFavoriteBeer, isBeerFavorite } from '@/services/beerService';
@@ -9,9 +8,10 @@ import { toast } from "sonner";
 
 interface BeerCardProps {
   beer: Beer;
+  onFavoriteToggle?: () => void;
 }
 
-const BeerCard = ({ beer }: BeerCardProps) => {
+const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
   const [isFavorite, setIsFavorite] = useState(() => isBeerFavorite(beer.id));
   const [imgError, setImgError] = useState(false);
   
@@ -24,6 +24,10 @@ const BeerCard = ({ beer }: BeerCardProps) => {
       saveFavoriteBeer(beer);
       setIsFavorite(true);
       toast.success(`Added ${beer.name} to favorites`);
+    }
+    
+    if (onFavoriteToggle) {
+      onFavoriteToggle();
     }
   };
   
