@@ -1,9 +1,12 @@
 
 import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +22,10 @@ const Header = () => {
     };
   }, [scrolled]);
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <header 
       className={cn(
@@ -28,27 +35,66 @@ const Header = () => {
     >
       <div className="mx-auto max-w-7xl flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img 
-            src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
-            alt="My Next Beer Logo" 
-            className="h-10 w-auto"
-          />
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
+              alt="My Next Beer Logo" 
+              className="h-10 w-auto"
+            />
+          </Link>
         </div>
         
         <nav className="hidden md:flex items-center space-x-6">
+          <Link to="/" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Home</Link>
           <a href="#search" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Discover</a>
-          <a href="#favorites" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Favorites</a>
+          <Link to="/profile" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Profile</Link>
           <a href="#about" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">About</a>
         </nav>
         
         <div className="md:hidden">
-          <img 
-            src="/lovable-uploads/db89d245-e910-4746-8f61-efde767fb63f.png" 
-            alt="My Next Beer Logo" 
-            className="h-6 w-auto"
-          />
+          <button 
+            onClick={toggleMobileMenu}
+            className="p-2 focus:outline-none"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6 text-beer-dark" />
+            ) : (
+              <Menu className="h-6 w-6 text-beer-dark" />
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-md py-4 px-6 flex flex-col gap-4 transition-all">
+          <Link to="/" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+          <a href="#search" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Discover
+          </a>
+          <Link to="/profile" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Profile
+          </Link>
+          <a href="#about" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </a>
+        </div>
+      )}
     </header>
   );
 };
