@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import BeerCard from './BeerCard';
 import { Beer, findSimilarBeers } from '@/services/beerService';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface BeerResultsProps {
   searchQuery: string;
@@ -21,21 +22,27 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
     setError(null);
     
     // Simulate network delay for a more realistic experience
-    setTimeout(() => {
-      try {
-        const beers = findSimilarBeers(searchQuery);
-        setResults(beers);
-        setIsLoading(false);
-        
-        if (beers.length === 0) {
-          setError(`No beers found matching "${searchQuery}". Try another search term.`);
+    const timer = setTimeout(() => {
+      const fetchBeers = async () => {
+        try {
+          const beers = await findSimilarBeers(searchQuery);
+          setResults(beers);
+          
+          if (beers.length === 0) {
+            setError(`No beers found matching "${searchQuery}". Try another search term.`);
+          }
+        } catch (err) {
+          console.error('Error fetching beer results:', err);
+          setError('Something went wrong. Please try again.');
+        } finally {
+          setIsLoading(false);
         }
-      } catch (err) {
-        console.error('Error fetching beer results:', err);
-        setError('Something went wrong. Please try again.');
-        setIsLoading(false);
-      }
-    }, 1500);
+      };
+      
+      fetchBeers();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, [searchQuery, isSearching]);
 
   if (!searchQuery && !isSearching) {
@@ -53,6 +60,7 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
             </div>
           </div>
           <p className="mt-4 text-beer-brown font-medium">Finding your next perfect beer...</p>
+          <p className="mt-2 text-beer-brown/60 text-sm">Searching multiple sources for the best results</p>
         </div>
       ) : error ? (
         <div className="text-center py-16">
@@ -64,6 +72,15 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
             {results.length} beer{results.length !== 1 ? 's' : ''} recommended for "
             <span className="text-beer-amber">{searchQuery}</span>"
           </h2>
+          
+          {/* Sources summary */}
+          <div className="mb-6 flex flex-wrap gap-2">
+            {Array.from(new Set(results.map(beer => beer.apiSource))).map(source => (
+              <Badge key={source} variant="outline" className="bg-beer-amber/5 border-beer-amber/20 text-beer-brown">
+                {source}
+              </Badge>
+            ))}
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {results.map((beer) => (

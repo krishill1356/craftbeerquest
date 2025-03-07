@@ -1,3 +1,4 @@
+
 export interface Beer {
   id: string;
   name: string;
@@ -12,6 +13,69 @@ export interface Beer {
   style: string;
   purchaseUrl: string;
   similarTo?: string;
+  apiSource?: string; // Track which API the beer came from
+}
+
+// Interface for OpenBreweryDB response
+interface OpenBreweryDBBeer {
+  id: string;
+  name: string;
+  brewery_type: string;
+  street: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  longitude: string;
+  latitude: string;
+  phone: string;
+  website_url: string;
+  updated_at: string;
+  created_at: string;
+}
+
+// Interface for Untappd response
+interface UntappdBeer {
+  bid: number;
+  beer_name: string;
+  beer_label: string;
+  beer_abv: number;
+  beer_ibu: number;
+  beer_description: string;
+  beer_style: string;
+  brewery: {
+    brewery_id: number;
+    brewery_name: string;
+    brewery_slug: string;
+    brewery_page_url: string;
+    brewery_label: string;
+  };
+}
+
+// Interface for Untappd API response
+interface UntappdResponse {
+  meta: {
+    code: number;
+    response_time: {
+      time: number;
+      measure: string;
+    };
+    init_time: {
+      time: number;
+      measure: string;
+    };
+  };
+  response: {
+    beers: {
+      count: number;
+      items: {
+        beer: UntappdBeer;
+        brewery: any;
+        checkin_count: number;
+        have_had: boolean;
+      }[];
+    };
+  };
 }
 
 // Mock database of craft beers
@@ -439,13 +503,117 @@ export const getSearchSuggestions = (query: string): string[] => {
   ).slice(0, 5);
 };
 
-export const findSimilarBeers = (query: string): Beer[] => {
+// Function to fetch beers from OpenBreweryDB
+const fetchFromOpenBreweryDB = async (query: string): Promise<Beer[]> => {
+  try {
+    // OpenBreweryDB allows searching by name
+    const response = await fetch(`https://api.openbrewerydb.org/breweries/search?query=${encodeURIComponent(query)}`);
+    
+    if (!response.ok) {
+      throw new Error(`OpenBreweryDB API error: ${response.status}`);
+    }
+    
+    const breweries: OpenBreweryDBBeer[] = await response.json();
+    
+    // Convert OpenBreweryDB results to our Beer format
+    return breweries.map(brewery => ({
+      id: `openbrewerydb-${brewery.id}`,
+      name: brewery.name,
+      tagline: `${brewery.brewery_type} brewery in ${brewery.city}`,
+      description: `${brewery.name} is a ${brewery.brewery_type} brewery located in ${brewery.city}, ${brewery.state}.`,
+      image_url: "https://images.unsplash.com/photo-1584225064785-c62a8b43d148?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80", // Default image
+      abv: 0, // No ABV info from this API
+      ibu: 0, // No IBU info from this API
+      brewery: brewery.name,
+      breweryUrl: brewery.website_url || "",
+      style: brewery.brewery_type || "Unknown",
+      purchaseUrl: brewery.website_url || `https://www.google.com/search?q=${encodeURIComponent(brewery.name)}`,
+      apiSource: "OpenBreweryDB"
+    }));
+  } catch (error) {
+    console.error("Error fetching from OpenBreweryDB:", error);
+    return [];
+  }
+};
+
+// Function to fetch beers from Untappd
+const fetchFromUntappd = async (query: string): Promise<Beer[]> => {
+  try {
+    // Note: Untappd requires authentication. This is a mock implementation.
+    // In a real app, you'd need to set up server-side requests with proper authentication.
+    // This is for demonstration purposes only.
+    
+    // Mock response for now - in production, you would replace this with actual API calls
+    // using your Untappd API credentials through a secure backend endpoint
+    console.log("Searching Untappd for:", query);
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Mock data - in a real implementation you would fetch from Untappd API
+    const mockBeers = [
+      {
+        bid: 1000001,
+        beer_name: `${query} IPA`,
+        beer_label: "https://images.unsplash.com/photo-1613520761181-a157937e9407?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        beer_abv: 6.2,
+        beer_ibu: 45,
+        beer_description: `A delicious IPA related to your search for "${query}". Notes of citrus and pine.`,
+        beer_style: "IPA",
+        brewery: {
+          brewery_id: 1001,
+          brewery_name: "Mock Brewery",
+          brewery_slug: "mock-brewery",
+          brewery_page_url: "https://untappd.com",
+          brewery_label: "https://untappd.com/brewery/logo.png"
+        }
+      },
+      {
+        bid: 1000002,
+        beer_name: `${query} Stout`,
+        beer_label: "https://images.unsplash.com/photo-1518176258769-f227c798150e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        beer_abv: 7.5,
+        beer_ibu: 30,
+        beer_description: `A rich and smooth stout related to your search for "${query}". Notes of chocolate and coffee.`,
+        beer_style: "Stout",
+        brewery: {
+          brewery_id: 1002,
+          brewery_name: "Mock Stout Brewery",
+          brewery_slug: "mock-stout-brewery",
+          brewery_page_url: "https://untappd.com",
+          brewery_label: "https://untappd.com/brewery/logo.png"
+        }
+      }
+    ];
+    
+    // Convert mock Untappd results to our Beer format
+    return mockBeers.map(beer => ({
+      id: `untappd-${beer.bid}`,
+      name: beer.beer_name,
+      tagline: `${beer.beer_style} by ${beer.brewery.brewery_name}`,
+      description: beer.beer_description,
+      image_url: beer.beer_label,
+      abv: beer.beer_abv,
+      ibu: beer.beer_ibu,
+      brewery: beer.brewery.brewery_name,
+      breweryUrl: beer.brewery.brewery_page_url,
+      style: beer.beer_style,
+      purchaseUrl: `https://www.google.com/search?q=${encodeURIComponent(beer.beer_name)}`,
+      apiSource: "Untappd"
+    }));
+  } catch (error) {
+    console.error("Error fetching from Untappd:", error);
+    return [];
+  }
+};
+
+export const findSimilarBeers = async (query: string): Promise<Beer[]> => {
   if (!query || query.trim() === "") return [];
   
   const lowerQuery = query.toLowerCase().trim();
   
-  // Search through all beers and match based on various criteria
-  return beerDatabase.filter(beer => {
+  // First, get local database results
+  const localResults = beerDatabase.filter(beer => {
     // Match by name, brewery, style, or tagline
     if (beer.name.toLowerCase().includes(lowerQuery)) return true;
     if (beer.brewery.toLowerCase().includes(lowerQuery)) return true;
@@ -464,6 +632,27 @@ export const findSimilarBeers = (query: string): Beer[] => {
     
     return false;
   });
+  
+  try {
+    // Fetch from external APIs in parallel
+    const [openBreweryResults, untappdResults] = await Promise.all([
+      fetchFromOpenBreweryDB(query),
+      fetchFromUntappd(query)
+    ]);
+    
+    // Combine and return all results
+    // Add source property to local results
+    const localResultsWithSource = localResults.map(beer => ({
+      ...beer,
+      apiSource: "Local Database"
+    }));
+    
+    return [...localResultsWithSource, ...openBreweryResults, ...untappdResults];
+  } catch (error) {
+    console.error("Error fetching from external APIs:", error);
+    // If APIs fail, still return local results
+    return localResults;
+  }
 };
 
 export const getFavoriteBeers = (): Beer[] => {

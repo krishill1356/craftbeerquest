@@ -1,190 +1,107 @@
 
-import { useState, useEffect } from 'react';
-import { Beer as BeerIcon, Link, Star, Share2 } from 'lucide-react';
-import { Beer, isBeerFavorite, saveFavoriteBeer, removeFavoriteBeer } from '@/services/beerService';
+import { useState } from 'react';
+import { Heart } from 'lucide-react';
+import { Beer, saveFavoriteBeer, removeFavoriteBeer, isBeerFavorite } from '@/services/beerService';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from "sonner";
 
 interface BeerCardProps {
   beer: Beer;
-  onFavoriteToggle?: () => void;
 }
 
-const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isImageError, setIsImageError] = useState(false);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    setIsFavorite(isBeerFavorite(beer.id));
-  }, [beer.id]);
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  const handleImageError = () => {
-    setIsImageError(true);
-  };
-
-  const toggleFavorite = () => {
+const BeerCard = ({ beer }: BeerCardProps) => {
+  const [isFavorite, setIsFavorite] = useState(() => isBeerFavorite(beer.id));
+  const [imgError, setImgError] = useState(false);
+  
+  const handleFavoriteToggle = () => {
     if (isFavorite) {
       removeFavoriteBeer(beer.id);
+      setIsFavorite(false);
+      toast.success(`Removed ${beer.name} from favorites`);
     } else {
       saveFavoriteBeer(beer);
-    }
-    setIsFavorite(!isFavorite);
-    if (onFavoriteToggle) onFavoriteToggle();
-  };
-
-  const shareBeer = async () => {
-    const shareData = {
-      title: `Check out this beer: ${beer.name}`,
-      text: `I think you'd enjoy ${beer.name} by ${beer.brewery}. ${beer.tagline}`,
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        toast({
-          title: "Shared successfully",
-          description: `You recommended ${beer.name} to a friend`,
-        });
-      } else {
-        // Fallback for browsers that don't support the Web Share API
-        navigator.clipboard.writeText(
-          `Check out this beer: ${beer.name} by ${beer.brewery}. ${beer.tagline}\n\n${window.location.href}`
-        );
-        toast({
-          title: "Link copied to clipboard",
-          description: "Now you can paste it to share with a friend",
-        });
-      }
-    } catch (error) {
-      console.error('Error sharing:', error);
-      toast({
-        title: "Sharing failed",
-        description: "Please try again later",
-        variant: "destructive",
-      });
+      setIsFavorite(true);
+      toast.success(`Added ${beer.name} to favorites`);
     }
   };
-
+  
+  const fallbackImage = "https://images.unsplash.com/photo-1600788886242-5c96aabe3757?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+  
   return (
-    <div className="beer-card flex flex-col h-full">
-      <div className="relative pb-[100%] overflow-hidden bg-beer-amber/10 rounded-t-lg">
-        {!imageLoaded && !isImageError && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full border-2 border-beer-amber/30 border-t-beer-amber animate-spin"></div>
-          </div>
-        )}
-        
-        {isImageError ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-beer-amber/10">
-            <BeerIcon className="w-16 h-16 text-beer-amber opacity-50" />
-          </div>
-        ) : (
-          <img
-            src={beer.specific_image_url || beer.image_url}
-            alt={beer.name}
-            className={cn(
-              "absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-500",
-              imageLoaded ? "opacity-100" : "opacity-0"
-            )}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-          />
-        )}
-        
-        <div className="absolute top-3 right-3 z-10 flex space-x-2">
-          <button
-            onClick={shareBeer}
-            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/80 text-beer-amber hover:bg-white transition-all"
-            aria-label="Share beer"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-          
-          <button
-            onClick={toggleFavorite}
-            className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-              isFavorite 
-                ? "bg-beer-amber text-white" 
-                : "bg-white/80 text-beer-amber hover:bg-white"
-            )}
-            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Star className={cn("w-5 h-5", isFavorite && "fill-current")} />
-          </button>
-        </div>
-        
-        <div className="absolute bottom-0 left-0 right-0 beer-pour-animation">
-          <div className="bubbles">
-            <div className="bubble"></div>
-            <div className="bubble"></div>
-            <div className="bubble"></div>
-            <div className="bubble"></div>
-            <div className="bubble"></div>
-          </div>
-        </div>
+    <Card className="h-full flex flex-col hover:shadow-md transition-shadow overflow-hidden bg-white border-beer-amber/10">
+      <div className="relative pt-[56.25%] overflow-hidden bg-beer-amber/5">
+        <img 
+          src={imgError ? fallbackImage : (beer.specific_image_url || beer.image_url)}
+          alt={beer.name}
+          onError={() => setImgError(true)}
+          className="absolute inset-0 w-full h-full object-cover transition-transform hover:scale-105"
+        />
+        <button
+          onClick={handleFavoriteToggle}
+          className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart className={cn("h-5 w-5", isFavorite ? "fill-red-500 text-red-500" : "text-gray-400")} />
+        </button>
       </div>
       
-      <div className="flex-1 p-5 bg-white border border-t-0 border-beer-amber/10 rounded-b-lg">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="font-bold text-xl text-beer-dark">{beer.name}</h3>
-            <p className="text-beer-amber font-medium text-sm mt-1">{beer.tagline}</p>
-          </div>
-          <div className="bg-beer-cream rounded-full px-2 py-1 text-xs font-medium text-beer-brown">
-            {beer.style}
-          </div>
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-xl font-bold text-beer-dark">{beer.name}</CardTitle>
+          {beer.apiSource && (
+            <Badge variant="outline" className="ml-2 bg-beer-amber/5 text-xs">
+              {beer.apiSource}
+            </Badge>
+          )}
+        </div>
+        <CardDescription className="text-beer-brown/80">{beer.tagline}</CardDescription>
+      </CardHeader>
+      
+      <CardContent className="flex-grow">
+        <p className="text-sm text-beer-brown line-clamp-3 mb-4">{beer.description}</p>
+        
+        <div className="flex gap-3 my-2">
+          {beer.abv > 0 && (
+            <div className="bg-beer-amber/10 rounded-full px-3 py-1 text-xs font-medium text-beer-brown">
+              ABV: {beer.abv}%
+            </div>
+          )}
+          {beer.ibu > 0 && (
+            <div className="bg-beer-amber/10 rounded-full px-3 py-1 text-xs font-medium text-beer-brown">
+              IBU: {beer.ibu}
+            </div>
+          )}
         </div>
         
-        <p className="mt-3 text-beer-brown/80 text-sm line-clamp-3">{beer.description}</p>
-        
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="text-sm">
-              <span className="font-bold text-beer-dark">{beer.abv}%</span>
-              <span className="text-beer-brown/70 ml-1">ABV</span>
-            </div>
-            
-            <div className="text-sm">
-              <span className="font-bold text-beer-dark">{beer.ibu}</span>
-              <span className="text-beer-brown/70 ml-1">IBU</span>
-            </div>
-          </div>
-          
-          <div className="text-sm font-medium text-beer-brown">
-            {beer.brewery}
-          </div>
+        <div className="mt-2 text-sm text-beer-brown">
+          <div><span className="font-medium">Style:</span> {beer.style}</div>
+          <div><span className="font-medium">Brewery:</span> {beer.brewery}</div>
         </div>
-        
-        <div className="mt-5 pt-4 border-t border-beer-amber/10 flex items-center justify-between">
-          <a 
-            href={beer.purchaseUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-sm text-beer-amber hover:text-beer-brown transition-colors flex items-center"
-          >
-            <span>Find to buy</span>
-            <Link className="ml-1 w-4 h-4" />
-          </a>
-          
+      </CardContent>
+      
+      <CardFooter className="flex justify-between gap-2 pt-2">
+        {beer.breweryUrl && (
           <a 
             href={beer.breweryUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-sm text-beer-dark hover:text-beer-amber transition-colors"
+            className="text-sm text-beer-amber hover:text-beer-brown transition-colors"
           >
-            Visit brewery
+            Brewery Website
           </a>
-        </div>
-      </div>
-    </div>
+        )}
+        <a 
+          href={beer.purchaseUrl} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-sm text-beer-amber hover:text-beer-brown transition-colors ml-auto"
+        >
+          Where to Buy
+        </a>
+      </CardFooter>
+    </Card>
   );
 };
 
