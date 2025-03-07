@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -48,6 +48,10 @@ const Header = () => {
           <Link to="/" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Home</Link>
           <a href="#search" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Discover</a>
           <Link to="/profile" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Profile</Link>
+          <Link to="/merch" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <ShoppingBag className="h-4 w-4" />
+            Merch
+          </Link>
           <a href="#about" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">About</a>
         </nav>
         
@@ -86,6 +90,13 @@ const Header = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             Profile
+          </Link>
+          <Link to="/merch" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-1"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Merch
           </Link>
           <a href="#about" 
             className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
