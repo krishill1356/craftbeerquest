@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, Camera, Book, Compass, Star, Beer } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -47,6 +47,26 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Home</Link>
           <a href="#search" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Discover</a>
+          <Link to="/favorites" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <Star className="h-4 w-4" />
+            Favorites
+          </Link>
+          <Link to="/recommendations" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <Beer className="h-4 w-4" />
+            Recommendations
+          </Link>
+          <Link to="/breweries" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <Compass className="h-4 w-4" />
+            Breweries
+          </Link>
+          <Link to="/journal" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <Book className="h-4 w-4" />
+            Journal
+          </Link>
+          <Link to="/photos" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+            <Camera className="h-4 w-4" />
+            Photos
+          </Link>
           <Link to="/profile" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Profile</Link>
           <Link to="/merch" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
             <ShoppingBag className="h-4 w-4" />
@@ -85,6 +105,41 @@ const Header = () => {
           >
             Discover
           </a>
+          <Link to="/favorites" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Star className="h-4 w-4" />
+            Favorites
+          </Link>
+          <Link to="/recommendations" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Beer className="h-4 w-4" />
+            Recommendations
+          </Link>
+          <Link to="/breweries" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Compass className="h-4 w-4" />
+            Breweries
+          </Link>
+          <Link to="/journal" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Book className="h-4 w-4" />
+            Journal
+          </Link>
+          <Link to="/photos" 
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Camera className="h-4 w-4" />
+            Photos
+          </Link>
           <Link to="/profile" 
             className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2"
             onClick={() => setMobileMenuOpen(false)}
@@ -92,7 +147,7 @@ const Header = () => {
             Profile
           </Link>
           <Link to="/merch" 
-            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-1"
+            className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
             onClick={() => setMobileMenuOpen(false)}
           >
             <ShoppingBag className="h-4 w-4" />
