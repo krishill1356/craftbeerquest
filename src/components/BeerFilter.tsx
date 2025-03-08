@@ -36,13 +36,25 @@ const BeerFilter = ({ onFilterChange, availableStyles, availableBreweries }: Bee
   });
 
   const handleAbvChange = (values: number[]) => {
-    const newFilters = { ...filters, abv: [values[0], values[1]] };
+    // Ensure we always have exactly two values for the tuple
+    const abvValues: [number, number] = [
+      values[0] !== undefined ? values[0] : filters.abv[0],
+      values[1] !== undefined ? values[1] : filters.abv[1]
+    ];
+    
+    const newFilters = { ...filters, abv: abvValues };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handleIbuChange = (values: number[]) => {
-    const newFilters = { ...filters, ibu: [values[0], values[1]] };
+    // Ensure we always have exactly two values for the tuple
+    const ibuValues: [number, number] = [
+      values[0] !== undefined ? values[0] : filters.ibu[0],
+      values[1] !== undefined ? values[1] : filters.ibu[1]
+    ];
+    
+    const newFilters = { ...filters, ibu: ibuValues };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
@@ -76,7 +88,7 @@ const BeerFilter = ({ onFilterChange, availableStyles, availableBreweries }: Bee
   };
 
   const resetFilters = () => {
-    const defaultFilters = {
+    const defaultFilters: FilterOptions = {
       abv: [0, 15],
       ibu: [0, 100],
       styles: [],
