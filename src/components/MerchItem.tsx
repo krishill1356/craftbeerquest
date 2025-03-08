@@ -11,18 +11,28 @@ export interface MerchItemProps {
   name: string;
   description: string;
   price: number;
+  currency?: string;
   imageSrc: string;
   sizes: MerchSize[];
   colors?: string[];
 }
 
-const MerchItem = ({ id, name, description, price, imageSrc, sizes, colors = [] }: MerchItemProps) => {
+const MerchItem = ({ 
+  id, 
+  name, 
+  description, 
+  price, 
+  currency = "GBP", 
+  imageSrc, 
+  sizes, 
+  colors = [] 
+}: MerchItemProps) => {
   const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState<MerchSize | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(colors.length > 0 ? colors[0] : null);
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    if (!selectedSize && sizes.length > 0) {
       toast({
         title: "Please select a size",
         description: "You need to select a size before adding to cart",
@@ -33,7 +43,7 @@ const MerchItem = ({ id, name, description, price, imageSrc, sizes, colors = [] 
     
     toast({
       title: "Added to cart!",
-      description: `${name} (${selectedSize}) has been added to your cart.`,
+      description: `${name}${selectedSize ? ` (${selectedSize})` : ''} has been added to your cart.`,
     });
   };
 
@@ -69,6 +79,13 @@ const MerchItem = ({ id, name, description, price, imageSrc, sizes, colors = [] 
     }
   };
 
+  const formatCurrency = (value: number, currencyCode: string) => {
+    if (currencyCode === "GBP") {
+      return `£${value.toFixed(2)}`;
+    }
+    return `$${value.toFixed(2)}`;
+  };
+
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all">
       <div className="relative h-64 overflow-hidden">
@@ -90,7 +107,7 @@ const MerchItem = ({ id, name, description, price, imageSrc, sizes, colors = [] 
         <p className="text-beer-brown mt-1">{description}</p>
         
         <div className="mt-4 flex justify-between items-center">
-          <span className="text-xl font-bold text-beer-dark">${price.toFixed(2)}</span>
+          <span className="text-xl font-bold text-beer-dark">{formatCurrency(price, currency)}</span>
         </div>
         
         {sizes.length > 0 && (

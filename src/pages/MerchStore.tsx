@@ -12,7 +12,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "tshirt-logo",
     name: "My Next Beer Logo T-Shirt",
     description: "Classic t-shirt featuring our iconic beer logo. Made with premium cotton.",
-    price: 24.99,
+    price: 19.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: ["Amber", "Dark", "Cream", "White"]
@@ -21,7 +22,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "hoodie-logo",
     name: "Beer Connoisseur Hoodie",
     description: "Stay warm while showing off your beer expertise. Features our logo on the front.",
-    price: 49.99,
+    price: 39.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Dark", "Amber", "Brown"]
@@ -30,7 +32,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "cap-logo",
     name: "Brewery Cap",
     description: "Classic cap with embroidered beer logo. Perfect for sunny days at the brewery.",
-    price: 19.99,
+    price: 14.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: ["S", "M", "L"],
     colors: ["Amber", "Dark", "Cream"]
@@ -39,7 +42,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "glass-set",
     name: "Craft Beer Glass Set",
     description: "Set of 4 premium glasses, each designed for different beer styles.",
-    price: 34.99,
+    price: 29.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1577032229840-33197764440d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: [],
     colors: []
@@ -48,7 +52,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "poster-beers",
     name: "Beer Styles Chart Poster",
     description: "Educational and decorative poster showing various beer styles and characteristics.",
-    price: 14.99,
+    price: 11.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1561013125-3ded8e304785?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: [],
     colors: []
@@ -57,7 +62,8 @@ const merchandiseItems: MerchItemProps[] = [
     id: "tote-bag",
     name: "Beer Lover's Tote Bag",
     description: "Sturdy canvas tote featuring our logo, perfect for carrying your favorite brews.",
-    price: 15.99,
+    price: 12.99,
+    currency: "GBP",
     imageSrc: "https://images.unsplash.com/photo-1597484662317-c93a6b307e80?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     sizes: [],
     colors: ["Cream", "Amber", "Dark"]
@@ -130,7 +136,7 @@ const MerchStore = () => {
               <h2 className="text-xl font-bold text-beer-dark">Shipping Information</h2>
             </div>
             <p className="text-beer-brown mb-4">
-              Free shipping on all orders over $50. Standard shipping takes 3-5 business days. Express shipping options available at checkout.
+              Free shipping on all orders over £40. Standard shipping takes 3-5 business days. Express shipping options available at checkout.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
               <div>
@@ -142,7 +148,7 @@ const MerchStore = () => {
               <div>
                 <h3 className="font-medium text-beer-dark mb-2">Questions?</h3>
                 <p className="text-sm text-beer-brown">
-                  Contact our customer service team at support@mynextbeer.com or call us at (555) 123-4567.
+                  Contact our customer service team at support@mynextbeer.com or call us at +44 (0) 123 456 7890.
                 </p>
               </div>
             </div>
