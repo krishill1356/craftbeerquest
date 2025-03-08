@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MapPin, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,8 +17,8 @@ interface Brewery {
   country: string;
   phone: string;
   website_url: string;
-  latitude: string;
-  longitude: string;
+  latitude: string | null;
+  longitude: string | null;
   distance?: number;
 }
 
@@ -38,20 +38,20 @@ const BreweryFinder = () => {
     setBreweries([]);
 
     try {
-      // Use OpenBreweryDB API
       let url;
       if (usingCurrentLocation) {
-        url = `https://api.openbrewerydb.org/breweries?per_page=10`;
+        // When using current location, we'll fetch all breweries and then filter by distance
+        url = 'https://api.openbrewerydb.org/v1/breweries?per_page=50';
       } else {
-        // Encode the location for the URL
+        // Use the city search parameter
         const encodedLocation = encodeURIComponent(location);
-        url = `https://api.openbrewerydb.org/breweries?by_city=${encodedLocation}&per_page=10`;
+        url = `https://api.openbrewerydb.org/v1/breweries?by_city=${encodedLocation}&per_page=15`;
       }
 
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch breweries');
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       
       let breweryData = await response.json();
@@ -61,25 +61,28 @@ const BreweryFinder = () => {
         const position = await getCurrentPosition();
         const { latitude, longitude } = position.coords;
         
-        // Add distance to each brewery
+        // Add distance to each brewery that has coordinates
         breweryData = breweryData
           .filter((brewery: Brewery) => brewery.latitude && brewery.longitude)
           .map((brewery: Brewery) => {
             const distance = calculateDistance(
               latitude, 
               longitude, 
-              parseFloat(brewery.latitude), 
-              parseFloat(brewery.longitude)
+              parseFloat(brewery.latitude || '0'), 
+              parseFloat(brewery.longitude || '0')
             );
             return { ...brewery, distance };
           })
-          .sort((a: Brewery, b: Brewery) => (a.distance || 0) - (b.distance || 0));
+          .sort((a: Brewery, b: Brewery) => (a.distance || Infinity) - (b.distance || Infinity))
+          .slice(0, 15); // Limit to 15 closest results
       }
 
       setBreweries(breweryData);
       
       if (breweryData.length === 0) {
         toast.info("No breweries found in this area. Try another location.");
+      } else {
+        toast.success(`Found ${breweryData.length} breweries`);
       }
     } catch (error) {
       console.error('Error fetching breweries:', error);
@@ -99,7 +102,7 @@ const BreweryFinder = () => {
       
       navigator.geolocation.getCurrentPosition(resolve, reject, {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 10000, // Increased timeout to give more time
         maximumAge: 0
       });
     });
@@ -122,14 +125,15 @@ const BreweryFinder = () => {
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`
         );
         const data = await response.json();
-        setLocation(data.address.city || data.address.town || 'Current Location');
+        setLocation(data.address?.city || data.address?.town || 'Current Location');
       } catch (error) {
         console.error('Error getting location name:', error);
         setLocation('Current Location');
       }
       
       setUsingCurrentLocation(true);
-      handleSearch();
+      // Wait a bit to ensure the state is updated before calling handleSearch
+      setTimeout(() => handleSearch(), 100);
     } catch (error) {
       console.error('Error getting current location:', error);
       toast.error("Failed to get your location. Please try entering it manually.");
@@ -158,8 +162,6 @@ const BreweryFinder = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto py-8">
-      <h2 className="text-2xl font-bold text-beer-dark mb-6">Find Local Breweries</h2>
-      
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="flex-grow">
           <Input
@@ -168,6 +170,9 @@ const BreweryFinder = () => {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             className="h-10"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearch();
+            }}
           />
         </div>
         <Button onClick={handleSearch} disabled={isLoading} className="bg-beer-amber hover:bg-beer-amber/90">
@@ -241,7 +246,7 @@ const BreweryFinder = () => {
         </div>
       )}
       
-      {!isLoading && breweries.length === 0 && location && (
+      {!isLoading && breweries.length === 0 && (
         <Card className="bg-gray-50 border-beer-amber/10">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-beer-brown text-center">
