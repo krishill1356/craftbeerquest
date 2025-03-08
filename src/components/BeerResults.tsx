@@ -1,6 +1,7 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import BeerCard from './BeerCard';
+import BeerFilter from './BeerFilter';
 import { Beer, findSimilarBeers } from '@/services/beerService';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -10,10 +11,37 @@ interface BeerResultsProps {
   isSearching: boolean;
 }
 
+type FilterOptions = {
+  abv: [number, number];
+  ibu: [number, number];
+  styles: string[];
+  breweries: string[];
+}
+
 const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
   const [results, setResults] = useState<Beer[]>([]);
+  const [filteredResults, setFilteredResults] = useState<Beer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterOptions>({
+    abv: [0, 15],
+    ibu: [0, 100],
+    styles: [],
+    breweries: [],
+  });
+
+  // Extract unique beer styles and breweries for filter options
+  const availableStyles = useMemo(() => {
+    if (results.length === 0) return [];
+    const styles = new Set(results.map(beer => beer.style).filter(Boolean));
+    return Array.from(styles);
+  }, [results]);
+  
+  const availableBreweries = useMemo(() => {
+    if (results.length === 0) return [];
+    const breweries = new Set(results.map(beer => beer.brewery).filter(Boolean));
+    return Array.from(breweries);
+  }, [results]);
 
   useEffect(() => {
     if (!searchQuery) return;
@@ -27,6 +55,7 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
         try {
           const beers = await findSimilarBeers(searchQuery);
           setResults(beers);
+          setFilteredResults(beers);
           
           if (beers.length === 0) {
             setError(`No beers found matching "${searchQuery}". Try another search term.`);
@@ -44,6 +73,41 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
     
     return () => clearTimeout(timer);
   }, [searchQuery, isSearching]);
+
+  // Apply filters when they change
+  useEffect(() => {
+    if (results.length === 0) return;
+    
+    const filtered = results.filter(beer => {
+      // Filter by ABV
+      if (beer.abv < filters.abv[0] || beer.abv > filters.abv[1]) {
+        return false;
+      }
+      
+      // Filter by IBU
+      if (beer.ibu < filters.ibu[0] || beer.ibu > filters.ibu[1]) {
+        return false;
+      }
+      
+      // Filter by style
+      if (filters.styles.length > 0 && beer.style && !filters.styles.includes(beer.style)) {
+        return false;
+      }
+      
+      // Filter by brewery
+      if (filters.breweries.length > 0 && beer.brewery && !filters.breweries.includes(beer.brewery)) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setFilteredResults(filtered);
+  }, [filters, results]);
+
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
 
   if (!searchQuery && !isSearching) {
     return null;
@@ -68,10 +132,18 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
         </div>
       ) : (
         <>
-          <h2 className="text-2xl font-bold text-beer-dark mb-6">
-            {results.length} beer{results.length !== 1 ? 's' : ''} recommended for "
-            <span className="text-beer-amber">{searchQuery}</span>"
-          </h2>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h2 className="text-2xl font-bold text-beer-dark mb-4 md:mb-0">
+              {filteredResults.length} beer{filteredResults.length !== 1 ? 's' : ''} recommended for "
+              <span className="text-beer-amber">{searchQuery}</span>"
+            </h2>
+            
+            <BeerFilter 
+              onFilterChange={handleFilterChange}
+              availableStyles={availableStyles}
+              availableBreweries={availableBreweries}
+            />
+          </div>
           
           {/* Sources summary */}
           <div className="mb-6 flex flex-wrap gap-2">
@@ -82,13 +154,19 @@ const BeerResults = ({ searchQuery, isSearching }: BeerResultsProps) => {
             ))}
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {results.map((beer) => (
-              <div key={beer.id} className={cn("transform transition-all duration-500 animate-slide-up")}>
-                <BeerCard beer={beer} />
-              </div>
-            ))}
-          </div>
+          {filteredResults.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-beer-brown text-lg">No beers match your filters. Try adjusting your criteria.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredResults.map((beer) => (
+                <div key={beer.id} className={cn("transform transition-all duration-500 animate-slide-up")}>
+                  <BeerCard beer={beer} />
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
