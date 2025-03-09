@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 
 interface Brewery {
   id: string;
@@ -36,6 +36,8 @@ const mapContainerStyle = {
   marginBottom: '1rem'
 };
 
+const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization")[] = ["places"];
+
 const BreweryFinder = () => {
   const [location, setLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +48,12 @@ const BreweryFinder = () => {
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   
   const mapRef = useRef<google.maps.Map | null>(null);
+  
+  const { isLoaded: mapsLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: libraries
+  });
   
   const onMapLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
@@ -247,6 +255,20 @@ const BreweryFinder = () => {
     }
   };
 
+  if (loadError) {
+    return (
+      <div className="w-full max-w-7xl mx-auto py-8">
+        <Card className="bg-gray-50 border-beer-amber/10">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <p className="text-beer-brown text-center">
+              Error loading Google Maps. Please try again later.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-7xl mx-auto py-8">
       <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -283,82 +305,91 @@ const BreweryFinder = () => {
         </Button>
       </div>
       
-      {!isLoading && (
-        <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={mapCenter}
-            zoom={mapZoom}
-            onLoad={onMapLoad}
-            options={{
-              streetViewControl: false,
-              mapTypeControl: false,
-              styles: [
-                {
-                  featureType: "poi.business",
-                  elementType: "labels",
-                  stylers: [{ visibility: "off" }],
-                },
-              ],
-            }}
-          >
-            {breweries.map((brewery) => (
-              brewery.latitude && brewery.longitude && (
-                <Marker
-                  key={brewery.id}
-                  position={{
-                    lat: parseFloat(brewery.latitude),
-                    lng: parseFloat(brewery.longitude)
-                  }}
-                  onClick={() => handleMarkerClick(brewery)}
-                  icon={{
-                    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%23D3A04D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5v16M5 5.03a3 3 0 0 1 4.5-.79l.7.86a3 3 0 0 0 4.6 0l.7-.86a3 3 0 0 1 4.5.79V19.5a3 3 0 0 1-4.5.79l-.7-.86a3 3 0 0 0-4.6 0l-.7.86a3 3 0 0 1-4.5-.79V5.03Z'/%3E%3C/svg%3E",
-                    scaledSize: new window.google.maps.Size(30, 30)
-                  }}
-                />
-              )
-            ))}
-            
-            {selectedBrewery && selectedBrewery.latitude && selectedBrewery.longitude && (
-              <InfoWindow
+      {!isLoading && mapsLoaded && (
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={mapCenter}
+          zoom={mapZoom}
+          onLoad={onMapLoad}
+          options={{
+            streetViewControl: false,
+            mapTypeControl: false,
+            styles: [
+              {
+                featureType: "poi.business",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }],
+              },
+            ],
+          }}
+        >
+          {breweries.map((brewery) => (
+            brewery.latitude && brewery.longitude && (
+              <Marker
+                key={brewery.id}
                 position={{
-                  lat: parseFloat(selectedBrewery.latitude),
-                  lng: parseFloat(selectedBrewery.longitude)
+                  lat: parseFloat(brewery.latitude),
+                  lng: parseFloat(brewery.longitude)
                 }}
-                onCloseClick={() => setSelectedBrewery(null)}
-              >
-                <div className="p-2 max-w-xs">
-                  <h3 className="font-bold text-beer-dark">{selectedBrewery.name}</h3>
-                  <p className="text-sm capitalize mb-1">{selectedBrewery.brewery_type} brewery</p>
-                  {selectedBrewery.street && (
-                    <p className="text-sm text-beer-brown">{selectedBrewery.street}</p>
-                  )}
-                  <p className="text-sm text-beer-brown mb-2">
-                    {selectedBrewery.city}, {selectedBrewery.state} {selectedBrewery.postal_code}
-                  </p>
-                  <div className="flex gap-2 mt-2">
-                    {selectedBrewery.website_url && (
-                      <a
-                        href={selectedBrewery.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-beer-amber hover:text-beer-brown font-medium"
-                      >
-                        Website
-                      </a>
-                    )}
-                    <button
-                      onClick={() => getDirections(selectedBrewery)}
-                      className="text-sm text-beer-amber hover:text-beer-brown font-medium flex items-center"
+                onClick={() => handleMarkerClick(brewery)}
+                icon={{
+                  url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%23D3A04D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5v16M5 5.03a3 3 0 0 1 4.5-.79l.7.86a3 3 0 0 0 4.6 0l.7-.86a3 3 0 0 1 4.5.79V19.5a3 3 0 0 1-4.5.79l-.7-.86a3 3 0 0 0-4.6 0l-.7.86a3 3 0 0 1-4.5-.79V5.03Z'/%3E%3C/svg%3E",
+                  scaledSize: new window.google.maps.Size(30, 30)
+                }}
+              />
+            )
+          ))}
+          
+          {selectedBrewery && selectedBrewery.latitude && selectedBrewery.longitude && (
+            <InfoWindow
+              position={{
+                lat: parseFloat(selectedBrewery.latitude),
+                lng: parseFloat(selectedBrewery.longitude)
+              }}
+              onCloseClick={() => setSelectedBrewery(null)}
+            >
+              <div className="p-2 max-w-xs">
+                <h3 className="font-bold text-beer-dark">{selectedBrewery.name}</h3>
+                <p className="text-sm capitalize mb-1">{selectedBrewery.brewery_type} brewery</p>
+                {selectedBrewery.street && (
+                  <p className="text-sm text-beer-brown">{selectedBrewery.street}</p>
+                )}
+                <p className="text-sm text-beer-brown mb-2">
+                  {selectedBrewery.city}, {selectedBrewery.state} {selectedBrewery.postal_code}
+                </p>
+                <div className="flex gap-2 mt-2">
+                  {selectedBrewery.website_url && (
+                    <a
+                      href={selectedBrewery.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-beer-amber hover:text-beer-brown font-medium"
                     >
-                      <Navigation className="h-3 w-3 mr-1" /> Directions
-                    </button>
-                  </div>
+                      Website
+                    </a>
+                  )}
+                  <button
+                    onClick={() => getDirections(selectedBrewery)}
+                    className="text-sm text-beer-amber hover:text-beer-brown font-medium flex items-center"
+                  >
+                    <Navigation className="h-3 w-3 mr-1" /> Directions
+                  </button>
                 </div>
-              </InfoWindow>
-            )}
-          </GoogleMap>
-        </LoadScript>
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+      )}
+      
+      {!mapsLoaded && !isLoading && (
+        <Card className="bg-gray-50 border-beer-amber/10 mb-8">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-beer-amber mb-4" />
+            <p className="text-beer-brown text-center">
+              Loading Google Maps...
+            </p>
+          </CardContent>
+        </Card>
       )}
       
       {breweries.length > 0 && (
