@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import BeerCard from './BeerCard';
 import { Beer, getFavoriteBeers } from '@/services/beerService';
 
-const FavoriteBeers = () => {
+const FavouriteBeers = () => {
   const [favourites, setFavourites] = useState<Beer[]>([]);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ const FavoriteBeers = () => {
   );
 };
 
-export default FavoriteBeers;
+export default FavouriteBeers;

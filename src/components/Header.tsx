@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Camera, Book, Compass, Star, Beer } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -47,7 +46,7 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Home</Link>
           <a href="#search" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Discover</a>
-          <Link to="/favorites" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
+          <Link to="/favourites" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
             <Star className="h-4 w-4" />
             Favourites
           </Link>
@@ -105,7 +104,7 @@ const Header = () => {
           >
             Discover
           </a>
-          <Link to="/favorites" 
+          <Link to="/favourites" 
             className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
             onClick={() => setMobileMenuOpen(false)}
           >
