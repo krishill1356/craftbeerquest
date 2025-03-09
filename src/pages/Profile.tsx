@@ -7,14 +7,14 @@ import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Profile = () => {
-  const [favorites, setFavorites] = useState<Beer[]>([]);
+  const [favourites, setFavourites] = useState<Beer[]>([]);
   
   useEffect(() => {
-    setFavorites(getFavoriteBeers());
+    setFavourites(getFavoriteBeers());
   }, []);
 
-  const refreshFavorites = () => {
-    setFavorites(getFavoriteBeers());
+  const refreshFavourites = () => {
+    setFavourites(getFavoriteBeers());
   };
 
   return (
@@ -27,25 +27,25 @@ const Profile = () => {
           
           <Tabs defaultValue="favorites" className="w-full">
             <TabsList className="mb-8">
-              <TabsTrigger value="favorites">Favorites</TabsTrigger>
+              <TabsTrigger value="favorites">Favourites</TabsTrigger>
               <TabsTrigger value="history">History</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             
             <TabsContent value="favorites" className="mt-4">
-              <h2 className="text-2xl font-bold text-beer-dark mb-6">Your Favorite Beers</h2>
+              <h2 className="text-2xl font-bold text-beer-dark mb-6">Your Favourite Beers</h2>
               
-              {favorites.length === 0 ? (
+              {favourites.length === 0 ? (
                 <div className="bg-white/80 backdrop-blur-sm rounded-lg p-8 text-center border border-beer-amber/10">
                   <p className="text-beer-brown">
-                    You haven't added any favorite beers yet. Click the heart icon on any beer to add it to your favorites.
+                    You haven't added any favourite beers yet. Click the heart icon on any beer to add it to your favourites.
                   </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {favorites.map((beer) => (
+                  {favourites.map((beer) => (
                     <div key={beer.id}>
-                      <BeerCard beer={beer} onFavoriteToggle={refreshFavorites} />
+                      <BeerCard beer={beer} onFavoriteToggle={refreshFavourites} />
                     </div>
                   ))}
                 </div>

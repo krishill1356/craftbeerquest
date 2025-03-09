@@ -49,7 +49,7 @@ const Header = () => {
           <a href="#search" className="text-beer-dark hover:text-beer-amber transition-colors font-medium">Discover</a>
           <Link to="/favorites" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
             <Star className="h-4 w-4" />
-            Favorites
+            Favourites
           </Link>
           <Link to="/recommendations" className="text-beer-dark hover:text-beer-amber transition-colors font-medium flex items-center gap-1">
             <Beer className="h-4 w-4" />
@@ -110,7 +110,7 @@ const Header = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             <Star className="h-4 w-4" />
-            Favorites
+            Favourites
           </Link>
           <Link to="/recommendations" 
             className="text-beer-dark hover:text-beer-amber transition-colors font-medium py-2 flex items-center gap-2"
