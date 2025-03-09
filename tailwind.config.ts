@@ -64,12 +64,12 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				beer: {
-					amber: '#D3A04D',
-					dark: '#362617',
-					cream: '#F5EFE0',
-					brown: '#5E4E37',
-					foam: '#F9F5EB',
-					stout: '#1E1B16'
+					amber: '#9b87f5',  // Updated to purple
+					dark: '#1A1F2C',   // Updated to dark purple
+					cream: '#E5DEFF',  // Updated to soft purple
+					brown: '#7E69AB',  // Updated to secondary purple
+					foam: '#F1F0FB',   // Updated to soft gray
+					stout: '#1A1F2C'   // Updated to dark purple
 				}
 			},
 			fontFamily: {

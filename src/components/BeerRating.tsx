@@ -81,7 +81,7 @@ const BeerRating = ({ beer, onRatingSubmit }: BeerRatingProps) => {
                 size={16}
                 className={`${
                   star <= savedRating.rating
-                    ? 'text-amber-500 fill-amber-500'
+                    ? 'text-purple-500 fill-purple-500'
                     : 'text-gray-300'
                 }`}
               />
@@ -120,7 +120,7 @@ const BeerRating = ({ beer, onRatingSubmit }: BeerRatingProps) => {
                     size={24}
                     className={`cursor-pointer mx-1 ${
                       star <= (hoverRating || rating)
-                        ? 'text-amber-500 fill-amber-500'
+                        ? 'text-purple-500 fill-purple-500'
                         : 'text-gray-300'
                     }`}
                     onClick={() => handleRatingClick(star)}
@@ -145,7 +145,7 @@ const BeerRating = ({ beer, onRatingSubmit }: BeerRatingProps) => {
               <Button 
                 onClick={handleSubmit}
                 disabled={rating === 0}
-                className="bg-beer-amber hover:bg-beer-amber/90"
+                className="bg-purple-600 hover:bg-purple-700"
               >
                 Submit Rating
               </Button>

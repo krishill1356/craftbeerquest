@@ -4,21 +4,21 @@ import BeerCard from './BeerCard';
 import { Beer, getFavoriteBeers } from '@/services/beerService';
 
 const FavoriteBeers = () => {
-  const [favorites, setFavorites] = useState<Beer[]>([]);
+  const [favourites, setFavourites] = useState<Beer[]>([]);
 
   useEffect(() => {
-    setFavorites(getFavoriteBeers());
+    setFavourites(getFavoriteBeers());
   }, []);
 
-  const refreshFavorites = () => {
-    setFavorites(getFavoriteBeers());
+  const refreshFavourites = () => {
+    setFavourites(getFavoriteBeers());
   };
 
-  if (favorites.length === 0) {
+  if (favourites.length === 0) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-8 text-center border border-beer-amber/10">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-8 text-center border border-purple-200">
         <p className="text-beer-brown">
-          You haven't added any favorite beers yet. Click the star icon on any beer to add it to your favorites.
+          You haven't added any favourite beers yet. Click the heart icon on any beer to add it to your favourites.
         </p>
       </div>
     );
@@ -26,9 +26,9 @@ const FavoriteBeers = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {favorites.map((beer) => (
+      {favourites.map((beer) => (
         <div key={beer.id}>
-          <BeerCard beer={beer} onFavoriteToggle={refreshFavorites} />
+          <BeerCard beer={beer} onFavoriteToggle={refreshFavourites} />
         </div>
       ))}
     </div>

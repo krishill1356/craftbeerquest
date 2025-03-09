@@ -13,10 +13,10 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #9b87f5aa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #9b87f5aa);
 }
 
 @keyframes logo-spin {
@@ -75,7 +75,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 3rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(155, 135, 245, 0.15);
   font-weight: bold;
   z-index: 0;
 }

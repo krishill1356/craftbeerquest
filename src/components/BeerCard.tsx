@@ -23,19 +23,19 @@ interface BeerCardProps {
 }
 
 const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(() => isBeerFavorite(beer.id));
+  const [isFavourite, setIsFavourite] = useState(() => isBeerFavorite(beer.id));
   const [imgError, setImgError] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   
-  const handleFavoriteToggle = () => {
-    if (isFavorite) {
+  const handleFavouriteToggle = () => {
+    if (isFavourite) {
       removeFavoriteBeer(beer.id);
-      setIsFavorite(false);
-      toast.success(`Removed ${beer.name} from favorites`);
+      setIsFavourite(false);
+      toast.success(`Removed ${beer.name} from favourites`);
     } else {
       saveFavoriteBeer(beer);
-      setIsFavorite(true);
-      toast.success(`Added ${beer.name} to favorites`);
+      setIsFavourite(true);
+      toast.success(`Added ${beer.name} to favourites`);
     }
     
     if (onFavoriteToggle) {
@@ -84,8 +84,8 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
   
   return (
     <>
-      <Card className="h-full flex flex-col hover:shadow-md transition-shadow overflow-hidden bg-white border-beer-amber/10">
-        <div className="relative pt-[56.25%] overflow-hidden bg-beer-amber/5">
+      <Card className="h-full flex flex-col hover:shadow-md transition-shadow overflow-hidden bg-white border-purple-200">
+        <div className="relative pt-[56.25%] overflow-hidden bg-purple-50">
           <img 
             src={imgError ? fallbackImage : (beer.specific_image_url || beer.image_url)}
             alt={beer.name}
@@ -102,11 +102,11 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
               <Share2 className="h-5 w-5 text-gray-600" />
             </button>
             <button
-              onClick={handleFavoriteToggle}
+              onClick={handleFavouriteToggle}
               className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
             >
-              <Heart className={cn("h-5 w-5", isFavorite ? "fill-red-500 text-red-500" : "text-gray-400")} />
+              <Heart className={cn("h-5 w-5", isFavourite ? "fill-red-500 text-red-500" : "text-gray-400")} />
             </button>
           </div>
         </div>
@@ -120,7 +120,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
               {beer.name}
             </CardTitle>
             {beer.apiSource && (
-              <Badge variant="outline" className="ml-2 bg-beer-amber/5 text-xs">
+              <Badge variant="outline" className="ml-2 bg-purple-50 text-xs text-purple-700 border-purple-200">
                 {beer.apiSource}
               </Badge>
             )}
@@ -133,12 +133,12 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
           
           <div className="flex gap-3 my-2">
             {beer.abv > 0 && (
-              <div className="bg-beer-amber/10 rounded-full px-3 py-1 text-xs font-medium text-beer-brown">
+              <div className="bg-purple-100 rounded-full px-3 py-1 text-xs font-medium text-purple-700">
                 ABV: {beer.abv}%
               </div>
             )}
             {beer.ibu > 0 && (
-              <div className="bg-beer-amber/10 rounded-full px-3 py-1 text-xs font-medium text-beer-brown">
+              <div className="bg-purple-100 rounded-full px-3 py-1 text-xs font-medium text-purple-700">
                 IBU: {beer.ibu}
               </div>
             )}
@@ -160,7 +160,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
               href={beer.breweryUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-sm text-beer-amber hover:text-beer-brown transition-colors"
+              className="text-sm text-purple-600 hover:text-purple-800 transition-colors"
             >
               Brewery Website
             </a>
@@ -169,7 +169,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
             href={beer.purchaseUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-sm text-beer-amber hover:text-beer-brown transition-colors ml-auto"
+            className="text-sm text-purple-600 hover:text-purple-800 transition-colors ml-auto"
           >
             Where to Buy
           </a>
@@ -196,11 +196,11 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
                 <BeerRating beer={beer} />
                 
                 <button
-                  onClick={handleFavoriteToggle}
+                  onClick={handleFavouriteToggle}
                   className="flex items-center gap-1 text-sm text-beer-brown hover:text-beer-amber"
                 >
-                  <Heart className={cn("h-4 w-4", isFavorite ? "fill-red-500 text-red-500" : "")} />
-                  <span>{isFavorite ? "Favorited" : "Add to Favorites"}</span>
+                  <Heart className={cn("h-4 w-4", isFavourite ? "fill-red-500 text-red-500" : "")} />
+                  <span>{isFavourite ? "Favourited" : "Add to Favourites"}</span>
                 </button>
               </div>
               
@@ -256,7 +256,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
                       href={beer.breweryUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-beer-amber hover:text-beer-brown transition-colors"
+                      className="text-purple-600 hover:text-purple-800 transition-colors"
                     >
                       Visit Brewery Website
                     </a>
@@ -265,7 +265,7 @@ const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
                     href={beer.purchaseUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-beer-amber hover:text-beer-brown transition-colors"
+                    className="text-purple-600 hover:text-purple-800 transition-colors"
                   >
                     Where to Buy
                   </a>

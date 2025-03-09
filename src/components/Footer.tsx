@@ -17,7 +17,7 @@ const Footer = () => {
           
           <div className="flex flex-wrap items-center justify-center gap-6">
             <a href="#search" className="text-white/80 hover:text-beer-amber transition-colors text-sm">Discover</a>
-            <a href="#favorites" className="text-white/80 hover:text-beer-amber transition-colors text-sm">Favorites</a>
+            <a href="#favorites" className="text-white/80 hover:text-beer-amber transition-colors text-sm">Favourites</a>
             <a href="#about" className="text-white/80 hover:text-beer-amber transition-colors text-sm">About</a>
           </div>
         </div>
