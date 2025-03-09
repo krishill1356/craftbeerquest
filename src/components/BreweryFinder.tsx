@@ -36,7 +36,9 @@ const mapContainerStyle = {
   marginBottom: '1rem'
 };
 
-const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization")[] = ["places"];
+// Define libraries with the correct type
+// The Google Maps API only supports these libraries
+const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = ["places"];
 
 const BreweryFinder = () => {
   const [location, setLocation] = useState('');
