@@ -1,5 +1,4 @@
-
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { MapPin, Loader2, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,7 +36,6 @@ const mapContainerStyle = {
 };
 
 // Define libraries with the correct type
-// The Google Maps API only supports these libraries
 const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = ["places"];
 
 const BreweryFinder = () => {
@@ -54,7 +52,7 @@ const BreweryFinder = () => {
   const { isLoaded: mapsLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-    libraries: libraries
+    libraries
   });
   
   const onMapLoad = useCallback((map: google.maps.Map) => {
@@ -73,10 +71,8 @@ const BreweryFinder = () => {
     try {
       let url;
       if (usingCurrentLocation) {
-        // When using current location, we'll fetch all breweries and then filter by distance
         url = 'https://api.openbrewerydb.org/v1/breweries?per_page=50';
       } else {
-        // Use the city search parameter
         const encodedLocation = encodeURIComponent(location);
         url = `https://api.openbrewerydb.org/v1/breweries?by_city=${encodedLocation}&per_page=15`;
       }
@@ -89,21 +85,18 @@ const BreweryFinder = () => {
       
       let breweryData = await response.json();
 
-      // Filter out breweries without coordinates as they can't be shown on the map
       breweryData = breweryData.filter((brewery: Brewery) => 
         brewery.latitude && brewery.longitude && 
         parseFloat(brewery.latitude) !== 0 && 
         parseFloat(brewery.longitude) !== 0
       );
 
-      // If using current location, calculate distances and sort
       if (usingCurrentLocation && navigator.geolocation) {
         const position = await getCurrentPosition();
         const { latitude, longitude } = position.coords;
         
         setMapCenter({ lat: latitude, lng: longitude });
         
-        // Add distance to each brewery that has coordinates
         breweryData = breweryData
           .filter((brewery: Brewery) => brewery.latitude && brewery.longitude)
           .map((brewery: Brewery) => {
@@ -116,16 +109,14 @@ const BreweryFinder = () => {
             return { ...brewery, distance };
           })
           .sort((a: Brewery, b: Brewery) => (a.distance || Infinity) - (b.distance || Infinity))
-          .slice(0, 15); // Limit to 15 closest results
+          .slice(0, 15);
       } else {
-        // Try to set map center based on first brewery with coordinates
         if (breweryData.length > 0 && breweryData[0].latitude && breweryData[0].longitude) {
           setMapCenter({
             lat: parseFloat(breweryData[0].latitude),
             lng: parseFloat(breweryData[0].longitude)
           });
         } else {
-          // Geocode the location to get coordinates
           try {
             const geocodeResponse = await fetch(
               `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
@@ -151,7 +142,6 @@ const BreweryFinder = () => {
       } else {
         toast.success(`Found ${breweryData.length} breweries`);
         
-        // Adjust map to fit all markers
         if (mapRef.current && breweryData.length > 1) {
           const bounds = new google.maps.LatLngBounds();
           breweryData.forEach((brewery: Brewery) => {
@@ -164,7 +154,6 @@ const BreweryFinder = () => {
           });
           mapRef.current.fitBounds(bounds);
         } else if (breweryData.length === 1) {
-          // If only one brewery, zoom in closer
           setMapZoom(14);
         }
       }
@@ -186,7 +175,7 @@ const BreweryFinder = () => {
       
       navigator.geolocation.getCurrentPosition(resolve, reject, {
         enableHighAccuracy: true,
-        timeout: 10000, // Increased timeout to give more time
+        timeout: 10000,
         maximumAge: 0
       });
     });
@@ -205,7 +194,6 @@ const BreweryFinder = () => {
       
       setMapCenter({ lat: latitude, lng: longitude });
       
-      // Get location name from coordinates using reverse geocoding
       try {
         const response = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`
@@ -218,7 +206,6 @@ const BreweryFinder = () => {
       }
       
       setUsingCurrentLocation(true);
-      // Wait a bit to ensure the state is updated before calling handleSearch
       setTimeout(() => handleSearch(), 100);
     } catch (error) {
       console.error('Error getting current location:', error);
@@ -227,11 +214,10 @@ const BreweryFinder = () => {
     }
   };
 
-  // Calculate distance between two points using the Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const toRadian = (degree: number) => degree * Math.PI / 180;
     
-    const R = 6371; // Earth radius in km
+    const R = 6371;
     const dLat = toRadian(lat2 - lat1);
     const dLon = toRadian(lon2 - lon1);
     
@@ -243,7 +229,7 @@ const BreweryFinder = () => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     const distance = R * c;
     
-    return Math.round(distance * 10) / 10; // Round to 1 decimal place
+    return Math.round(distance * 10) / 10;
   };
 
   const handleMarkerClick = (brewery: Brewery) => {

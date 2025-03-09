@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Heart, Share2 } from 'lucide-react';
-import { Beer, saveFavoriteBeer, removeFavoriteBeer, isBeerFavorite } from '@/services/beerService';
+import { Beer, saveFavouriteBeer, removeFavouriteBeer, isBeerFavourite } from '@/services/beerService';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -23,17 +23,17 @@ interface BeerCardProps {
 }
 
 const BeerCard = ({ beer, onFavoriteToggle }: BeerCardProps) => {
-  const [isFavourite, setIsFavourite] = useState(() => isBeerFavorite(beer.id));
+  const [isFavourite, setIsFavourite] = useState(() => isBeerFavourite(beer.id));
   const [imgError, setImgError] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   
   const handleFavouriteToggle = () => {
     if (isFavourite) {
-      removeFavoriteBeer(beer.id);
+      removeFavouriteBeer(beer.id);
       setIsFavourite(false);
       toast.success(`Removed ${beer.name} from favourites`);
     } else {
-      saveFavoriteBeer(beer);
+      saveFavouriteBeer(beer);
       setIsFavourite(true);
       toast.success(`Added ${beer.name} to favourites`);
     }
